@@ -1,0 +1,14 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "printWidth": 120,
+    "semi": true,
+    "tabWidth": 4,
+    "useTabs": false,
+    "trailingComma": "none",
+    "singleQuote": true,
+    "endOfLine": "lf",
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "quoteProps": "as-needed",
+    "ignorePatterns": ["build/**", "node_modules/**", "package-lock.json"]
+}

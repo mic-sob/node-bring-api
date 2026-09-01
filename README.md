@@ -1,98 +1,152 @@
-# Node-Bring-Shopping
-[![NPM version](http://img.shields.io/npm/v/bring-shopping.svg)](https://www.npmjs.com/package/bring-shopping)
+# bring-shopping
+
+[![NPM version](https://img.shields.io/npm/v/bring-shopping.svg)](https://www.npmjs.com/package/bring-shopping)
 [![Downloads](https://img.shields.io/npm/dm/bring-shopping.svg)](https://www.npmjs.com/package/bring-shopping)
-![Build Status](https://github.com/foxriver76/node-bring-api/workflows/Test%20and%20Release/badge.svg)
+[![Build Status](https://github.com/foxriver76/node-bring-api/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/foxriver76/node-bring-api/actions/workflows/test-and-release.yml)
 
-A __zero dependency__ node module for Bring! shopping lists __entirely written in TypeScript__.
+A zero-dependency, functional TypeScript client for Bring! shopping lists.
 
-## Disclaimer
-The developers of this module are in no way endorsed by or affiliated with
-Bring! Labs AG, or any associated subsidiaries, logos or trademarks.
+> This project uses an undocumented API and is not endorsed by or affiliated with Bring! Labs AG.
+
+## Requirements
+
+- Node.js 22 or newer
+- An existing Bring! account for authenticated endpoints
 
 ## Installation
-```npm install bring-shopping --production```
 
-## Usage Example
-
-```javascript
-const bringApi = require(`bring-shopping`);
-
-main();
-
-async function main () {
-    // provide user and email to login
-    const bring = new bringApi({mail: `example@example.com`, password: `secret`});
-    
-    // login to get your uuid and Bearer token
-    try {
-        await bring.login();
-        console.log(`Successfully logged in as ${bring.name}`);
-    } catch (e) {
-        console.error(`Error on Login: ${e.message}`);
-    }   
-    
-    // get all lists and their listUuid
-    const lists = await bring.loadLists();
-    
-    // get items of a list by its list uuid
-    const items = await bring.getItems('9b3ba561-02ad-4744-a737-c43k7e5b93ec');
-    
-    // get translations
-    const translations = await bring.loadTranslations('de-DE');
-} 
+```sh
+npm install bring-shopping
 ```
 
-More important methods are `getItems(listUUID)`, `getItemsDetails(listUUID)`, `saveItem(listUuid, itemName, specificaiton)`, 
-`moveToRecentList(listUuid, itemName)` and `getAllUsersFromList(listUuid)`.
+## Usage
 
-## Changelog
-### 2.0.1 (2025-01-21)
-* (@foxriver76) also throw on http errors
+`connectBring` authenticates and returns a client that is ready to use. There is no constructor and no separate `login()` step.
 
-### 2.0.0 (2024-11-27)
-* (@foxriver76) ported to native `fetch` module (BREAKING: Requires Node.js 18 or above)
+```js
+import { connectBring } from 'bring-shopping';
 
-### 1.5.1 (2022-10-31)
-* (foxriver76) updated types
-* (foxriver76) fixed `removeItemImage` as headers were missing
+const bring = await connectBring({
+    email: 'example@example.com',
+    password: 'secret'
+});
 
-### 1.5.0 (2022-10-31)
-* (Aliyss) added methods to link an image to an item (PR #221)
+const { lists } = await bring.lists.getAll();
+const items = await bring.lists.getItems({ listId: lists[0].listUuid });
+```
 
-### 1.4.3 (2022-05-01)
-* (foxriver76) fixed typos in types (thanks to @Squawnchy)
+### Reuse an existing session
 
-### 1.4.2 (2021-08-12)
-* (foxriver76) restructure to typescript
+Pass a stored session to avoid logging in again:
 
-### 1.3.1 (2021-04-29)
-* (foxriver76) fixed issue where error was used instead of the mssage on `getPendingInvitations`
+```js
+import { createBringClient } from 'bring-shopping';
 
-### 1.3.0 (2020-10-05)
-* (mdhom) added `getItemsDetails` method
-* (foxriver76) now reject with real errors instead of strings
+const bring = createBringClient({
+    session: {
+        userId: process.env.BRING_USER_ID,
+        accessToken: process.env.BRING_ACCESS_TOKEN,
+        refreshToken: process.env.BRING_REFRESH_TOKEN
+    }
+});
 
-### 1.2.3 (2019-09-22)
-* (foxriver76) on new call of login overwrite bearer header to allow reauth
+const { lists } = await bring.lists.getAll();
+```
 
-### 1.2.2
-* (foxriver76) More information on rejection of getItems
+Use `bring.getSession()` after `connectBring()` if the application needs to persist the returned tokens. Do not commit credentials or tokens to source control.
 
-### 1.2.1
-* (foxriver76) minor fix
+### Public resources
 
-### 1.2.0
-* (foxriver76) new functionalities -> getTranslations, getCatalog and getPendingInvitations
+Catalogs and translations do not require authentication or a client:
 
-### 1.1.0
-* (foxriver76) use API version v2
+```js
+import { getCatalog, getTranslations } from 'bring-shopping';
 
-### 1.0.2
-* (foxriver76) minor code optimization, nothing functional
+const catalog = await getCatalog({ locale: 'de-DE' });
+const translations = await getTranslations({ locale: 'de-DE' });
+```
 
-### 1.0.1
-* (foxriver76) fix links in package
+### Change a shopping list
 
-### 1.0.0
-* (foxriver76) offical release
+```js
+await bring.lists.saveItem({
+    listId: '9b3ba561-02ad-4744-a737-c43b7e5b93ec',
+    name: 'Coffee',
+    specification: 'Whole beans'
+});
 
+await bring.lists.moveItemToRecent({
+    listId: '9b3ba561-02ad-4744-a737-c43b7e5b93ec',
+    name: 'Coffee'
+});
+```
+
+All operations accept an optional second argument with an `AbortSignal`:
+
+```js
+const items = await bring.lists.getItems(
+    { listId: '9b3ba561-02ad-4744-a737-c43b7e5b93ec' },
+    { signal: AbortSignal.timeout(5_000) }
+);
+```
+
+## Errors
+
+Failed HTTP responses and network failures reject with a structured `BringApiError`:
+
+```js
+import { isBringApiError } from 'bring-shopping';
+
+try {
+    await bring.lists.getAll();
+} catch (error) {
+    if (isBringApiError(error)) {
+        console.error(error.status, error.code, error.message);
+    }
+}
+```
+
+## API overview
+
+- `connectBring(credentials, options?)`
+- `authenticate(credentials, options?)`
+- `createBringClient({ session, ...options })`
+- `bring.lists`: `getAll`, `getItems`, `getItemDetails`, `saveItem`, `removeItem`, `moveItemToRecent`, `getUsers`
+- `bring.itemImages`: `save`, `remove`
+- `bring.user.getSettings`
+- `bring.invitations.getPending`
+- `getCatalog(options)`
+- `getTranslations(options)`
+
+The optional client configuration supports `baseUrl`, a custom `fetch` implementation, API headers and country selection. All public TypeScript types are exported from the package root.
+
+## Migrating from v2
+
+Version 3 is ESM-only and replaces the stateful `Bring` class:
+
+```diff
+- const Bring = require('bring-shopping');
+- const bring = new Bring({ mail, password });
+- await bring.login();
+- const lists = await bring.loadLists();
++ import { connectBring } from 'bring-shopping';
++ const bring = await connectBring({ email: mail, password });
++ const lists = await bring.lists.getAll();
+```
+
+Mutating methods now return `Promise<void>` and reject for non-successful HTTP statuses. Method arguments use named objects and `uuid` arguments are named `listId` or `itemId`.
+
+## Development
+
+The project uses TypeScript 7, Oxlint with type-aware rules and Oxfmt:
+
+```sh
+npm ci
+npm run check
+```
+
+Use `npm run format` to apply the repository formatting rules.
+
+## License
+
+[MIT](LICENSE)
