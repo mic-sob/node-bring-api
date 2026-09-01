@@ -1,6 +1,6 @@
 {
     "name": "@micsob/bring-api-client",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Zero-dependency functional TypeScript client for the Bring! API",
     "keywords": [
         "bring",
