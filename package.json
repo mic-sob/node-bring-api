@@ -47,7 +47,7 @@
         "format:check": "oxfmt --check",
         "lint": "oxlint src test",
         "prepack": "npm run build",
-        "test": "npm run build && node --test test/*.test.js",
+        "test": "npm run build && node --test",
         "typecheck": "tsc -p tsconfig.json"
     },
     "devDependencies": {
