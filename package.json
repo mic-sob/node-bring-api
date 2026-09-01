@@ -1,53 +1,64 @@
 {
-  "name": "bring-shopping",
-  "version": "2.0.1",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "description": "Nodejs wrapper for the Bring! API",
-  "author": {
-    "name": "Moritz Heusinger",
-    "email": "moritz.heusinger@gmail.com"
-  },
-  "contributors": [
-    {
-      "name": "Moritz Heusinger",
-      "email": "moritz.heusinger@gmail.com"
+    "name": "bring-shopping",
+    "version": "3.0.0",
+    "description": "Zero-dependency functional TypeScript client for the Bring! API",
+    "keywords": [
+        "bring",
+        "shopping-list"
+    ],
+    "homepage": "https://github.com/foxriver76/bring-api",
+    "bugs": {
+        "url": "https://github.com/foxriver76/node-bring-api/issues"
+    },
+    "license": "MIT",
+    "author": {
+        "name": "Moritz Heusinger",
+        "email": "moritz.heusinger@gmail.com"
+    },
+    "contributors": [
+        {
+            "name": "Moritz Heusinger",
+            "email": "moritz.heusinger@gmail.com"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/foxriver76/node-bring-api.git"
+    },
+    "files": [
+        "build/",
+        "LICENSE",
+        "README.md"
+    ],
+    "type": "module",
+    "sideEffects": false,
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./build/index.d.ts",
+            "import": "./build/index.js"
+        }
+    },
+    "scripts": {
+        "build": "npm run clean && tsc -p tsconfig.build.json",
+        "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+        "clean": "node --eval \"import('node:fs').then(({ rmSync }) => rmSync('build', { recursive: true, force: true }))\"",
+        "format": "oxfmt",
+        "format:check": "oxfmt --check",
+        "lint": "oxlint src test",
+        "prepack": "npm run build",
+        "test": "npm run build && node --test test/*.test.js",
+        "typecheck": "tsc -p tsconfig.json"
+    },
+    "devDependencies": {
+        "@types/node": "^22.20.1",
+        "oxfmt": "^0.65.0",
+        "oxlint": "^1.80.0",
+        "oxlint-tsgolint": "^7.0.2001",
+        "typescript": "^7.0.2"
+    },
+    "engines": {
+        "node": ">=22.0.0"
     }
-  ],
-  "homepage": "https://github.com/foxriver76/bring-api",
-  "license": "MIT",
-  "keywords": [
-    "bring",
-    "shopping-list"
-  ],
-  "devDependencies": {
-    "@types/node": "^18.11.8",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "chai": "^4.3.6",
-    "eslint": "^8.26.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "mocha": "^10.1.0",
-    "prettier": "^2.7.1",
-    "typescript": "^5.7.2"
-  },
-  "scripts": {
-    "test": "node node_modules/mocha/bin/mocha",
-    "build": "tsc -b tsconfig.build.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/foxriver76/node-bring-api.git"
-  },
-  "bugs": {
-    "url": "https://github.com/foxriver76/node-bring-api/issues"
-  },
-  "files": [
-    "build/",
-    "LICENSE"
-  ],
-  "main": "build/bring.js",
-  "types": "build/bring.d.ts"
 }

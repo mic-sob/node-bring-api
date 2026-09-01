@@ -1,0 +1,1 @@
+{"version":3,"file":"client.d.ts","sourceRoot":"","sources":["../src/client.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EACR,WAAW,EACX,cAAc,EACd,mBAAmB,EACnB,WAAW,EAYd,MAAM,YAAY,CAAC;AAQpB,wBAAgB,iBAAiB,CAAC,OAAO,EAAE,mBAAmB,GAAG,WAAW,CAwG3E;AAED,wBAAsB,YAAY,CAAC,WAAW,EAAE,WAAW,EAAE,OAAO,GAAE,cAAmB,GAAG,OAAO,CAAC,WAAW,CAAC,CAG/G"}
