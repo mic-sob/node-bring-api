@@ -1,29 +1,24 @@
 {
-    "name": "bring-shopping",
+    "name": "@micsob/bring-api-client",
     "version": "3.0.0",
     "description": "Zero-dependency functional TypeScript client for the Bring! API",
     "keywords": [
         "bring",
         "shopping-list"
     ],
-    "homepage": "https://github.com/foxriver76/bring-api",
+    "homepage": "https://github.com/mic-sob/node-bring-api#readme",
     "bugs": {
-        "url": "https://github.com/foxriver76/node-bring-api/issues"
+        "url": "https://github.com/mic-sob/node-bring-api/issues"
     },
     "license": "MIT",
     "author": {
-        "name": "Moritz Heusinger",
-        "email": "moritz.heusinger@gmail.com"
+        "name": "Michal Sobecki",
+        "email": "michal.sobecki@protonmail.ch",
+        "url": "https://github.com/mic-sob"
     },
-    "contributors": [
-        {
-            "name": "Moritz Heusinger",
-            "email": "moritz.heusinger@gmail.com"
-        }
-    ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/foxriver76/node-bring-api.git"
+        "url": "git+https://github.com/mic-sob/node-bring-api.git"
     },
     "files": [
         "build/",
@@ -39,6 +34,10 @@
             "types": "./build/index.d.ts",
             "import": "./build/index.js"
         }
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
     },
     "scripts": {
         "build": "npm run clean && tsc -p tsconfig.build.json",

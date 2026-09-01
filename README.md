@@ -1,8 +1,8 @@
-# bring-shopping
+# @micsob/bring-api-client
 
-[![NPM version](https://img.shields.io/npm/v/bring-shopping.svg)](https://www.npmjs.com/package/bring-shopping)
-[![Downloads](https://img.shields.io/npm/dm/bring-shopping.svg)](https://www.npmjs.com/package/bring-shopping)
-[![Build Status](https://github.com/foxriver76/node-bring-api/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/foxriver76/node-bring-api/actions/workflows/test-and-release.yml)
+[![NPM version](https://img.shields.io/npm/v/%40micsob%2Fbring-api-client.svg)](https://www.npmjs.com/package/@micsob/bring-api-client)
+[![Downloads](https://img.shields.io/npm/dm/%40micsob%2Fbring-api-client.svg)](https://www.npmjs.com/package/@micsob/bring-api-client)
+[![Build Status](https://github.com/mic-sob/node-bring-api/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/mic-sob/node-bring-api/actions/workflows/test-and-release.yml)
 
 A zero-dependency, functional TypeScript client for Bring! shopping lists.
 
@@ -16,7 +16,7 @@ A zero-dependency, functional TypeScript client for Bring! shopping lists.
 ## Installation
 
 ```sh
-npm install bring-shopping
+npm install @micsob/bring-api-client
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ npm install bring-shopping
 `connectBring` authenticates and returns a client that is ready to use. There is no constructor and no separate `login()` step.
 
 ```js
-import { connectBring } from 'bring-shopping';
+import { connectBring } from '@micsob/bring-api-client';
 
 const bring = await connectBring({
     email: 'example@example.com',
@@ -40,7 +40,7 @@ const items = await bring.lists.getItems({ listId: lists[0].listUuid });
 Pass a stored session to avoid logging in again:
 
 ```js
-import { createBringClient } from 'bring-shopping';
+import { createBringClient } from '@micsob/bring-api-client';
 
 const bring = createBringClient({
     session: {
@@ -60,7 +60,7 @@ Use `bring.getSession()` after `connectBring()` if the application needs to pers
 Catalogs and translations do not require authentication or a client:
 
 ```js
-import { getCatalog, getTranslations } from 'bring-shopping';
+import { getCatalog, getTranslations } from '@micsob/bring-api-client';
 
 const catalog = await getCatalog({ locale: 'de-DE' });
 const translations = await getTranslations({ locale: 'de-DE' });
@@ -95,7 +95,7 @@ const items = await bring.lists.getItems(
 Failed HTTP responses and network failures reject with a structured `BringApiError`:
 
 ```js
-import { isBringApiError } from 'bring-shopping';
+import { isBringApiError } from '@micsob/bring-api-client';
 
 try {
     await bring.lists.getAll();
@@ -129,7 +129,7 @@ Version 3 is ESM-only and replaces the stateful `Bring` class:
 - const bring = new Bring({ mail, password });
 - await bring.login();
 - const lists = await bring.loadLists();
-+ import { connectBring } from 'bring-shopping';
++ import { connectBring } from '@micsob/bring-api-client';
 + const bring = await connectBring({ email: mail, password });
 + const lists = await bring.lists.getAll();
 ```
@@ -146,6 +146,10 @@ npm run check
 ```
 
 Use `npm run format` to apply the repository formatting rules.
+
+## Credits
+
+This project is a modernized fork of [foxriver76/node-bring-api](https://github.com/foxriver76/node-bring-api), originally created and maintained by [Moritz Heusinger](https://github.com/foxriver76). Thanks to Moritz and all contributors to the original project for building its foundation.
 
 ## License
 
